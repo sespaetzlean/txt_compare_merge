@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-// Function to replace server_url and version using regex
+// Function to replace server_url and version using regex, with a check for single occurrence
 function replaceVersionAndServerUrlWithRegex(configFile1, configFile2, newFile) {
   // Read both config files
   const config1 = fs.readFileSync(configFile1, 'utf8');
@@ -10,8 +10,24 @@ function replaceVersionAndServerUrlWithRegex(configFile1, configFile2, newFile) 
   const serverUrlRegex = /server_url=.*/;
   const versionRegex = /version=.*/;
 
-  const serverUrlLine = config2.match(serverUrlRegex)[0];
-  const versionLine = config2.match(versionRegex)[0];
+  // Match the regex and check if there's only one match
+  const serverUrlMatches = config2.match(serverUrlRegex);
+  const versionMatches = config2.match(versionRegex);
+
+  // Check if there's more than one match for server_url or version
+  if (serverUrlMatches.length !== 1) {
+    console.error(`Error: Expected 1 match for server_url, but found ${serverUrlMatches.length}.`);
+    return; // Exit the function if multiple or no matches are found
+  }
+
+  if (versionMatches.length !== 1) {
+    console.error(`Error: Expected 1 match for version, but found ${versionMatches.length}.`);
+    return; // Exit the function if multiple or no matches are found
+  }
+
+  // Extract the single match for server_url and version
+  const serverUrlLine = serverUrlMatches[0];
+  const versionLine = versionMatches[0];
 
   // Duplicate config_parameters.txt content
   let newConfig = config1;
