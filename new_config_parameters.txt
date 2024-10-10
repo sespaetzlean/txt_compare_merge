@@ -1,0 +1,15 @@
+
+[Settings]
+version=2.0
+username=admin
+password=newpass456
+server_url=http://localhost:7000
+
+[Database]
+db_name=my_database
+db_user=new_db_admin
+db_password=new_db_pass456
+
+[Features]
+feature_a=disabled
+feature_b=disabled
