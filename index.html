@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Reader Example</title>
+    <title>File Reader Example with Checkbox</title>
 </head>
 <body>
     <h1>Upload Two Files</h1>
@@ -13,6 +13,10 @@
 
         <label for="file2">Select File 2:</label>
         <input type="file" id="file2" accept=".txt"><br><br>
+
+        <!-- Checkbox to toggle different behavior -->
+        <label for="appendCheckbox">Append text line by line instead of concatenating:</label>
+        <input type="checkbox" id="appendCheckbox"><br><br>
 
         <button type="button" onclick="readFiles()">Process Files</button>
     </form>
