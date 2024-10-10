@@ -1,0 +1,17 @@
+{
+    "replacements": [
+      {
+        "regex": "server_url=.*"
+      },
+      {
+        "regex": "version=.*"
+      },
+      {
+        "regex": "username=.*"
+      },
+      {
+        "regex": "db_name=.*"
+      }
+    ]
+  }
+  

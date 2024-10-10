@@ -1,51 +1,42 @@
 const fs = require('fs');
 
-// Function to replace server_url and version using regex, with a check for single occurrence
-function replaceVersionAndServerUrlWithRegex(configFile1, configFile2, newFile) {
+// Function to dynamically replace lines using regex patterns from a JSON file
+function replaceLinesUsingJson(configFile1, configFile2, jsonFile, newFile) {
   // Read both config files
   const config1 = fs.readFileSync(configFile1, 'utf8');
   const config2 = fs.readFileSync(configFile2, 'utf8');
-
-  // Use regex to find the server_url and version lines in config_parameters_v2.txt
-  const serverUrlRegex = /server_url=.*/;
-  const versionRegex = /version=.*/;
-
-  // Match the regex and check if there's only one match
-  const serverUrlMatches = config2.match(serverUrlRegex);
-  const versionMatches = config2.match(versionRegex);
-
-  // Check if there's more than one match for server_url or version
-  if (serverUrlMatches.length !== 1) {
-    console.error(`Error: Expected 1 match for server_url, but found ${serverUrlMatches.length}.`);
-    return; // Exit the function if multiple or no matches are found
-  }
-
-  if (versionMatches.length !== 1) {
-    console.error(`Error: Expected 1 match for version, but found ${versionMatches.length}.`);
-    return; // Exit the function if multiple or no matches are found
-  }
-
-  // Extract the single match for server_url and version
-  const serverUrlLine = serverUrlMatches[0];
-  const versionLine = versionMatches[0];
-
-  // Duplicate config_parameters.txt content
+  
+  // Read the JSON file containing the regex patterns
+  const replacementsData = JSON.parse(fs.readFileSync(jsonFile, 'utf8'));
+  
+  // Start with the contents of config_parameters.txt
   let newConfig = config1;
 
-  // Replace the server_url and version lines in the duplicated file using regex
-  newConfig = newConfig.replace(serverUrlRegex, serverUrlLine);
-  newConfig = newConfig.replace(versionRegex, versionLine);
+  // Iterate over each replacement rule in the JSON file
+  replacementsData.replacements.forEach(replacementRule => {
+    const regexPattern = new RegExp(replacementRule.regex); // Create regex object
+    const matchArray = config2.match(regexPattern); // Find matches in the second file
 
-  // Write the new configuration to a new file
+    if (!matchArray || matchArray.length !== 1) {
+      // Handle errors where matches are not exactly one
+      console.error(`Error: Expected 1 match for ${replacementRule.regex}, but found ${matchArray ? matchArray.length : 0}.`);
+      return;
+    }
+
+    // Perform the replacement in the newConfig content
+    newConfig = newConfig.replace(regexPattern, matchArray[0]);
+  });
+
+  // Write the modified config to a new file
   fs.writeFileSync(newFile, newConfig, 'utf8');
-
   console.log(`New config file created: ${newFile}`);
 }
 
 // File paths
-const configFile1 = './config_parameters_A.txt';
-const configFile2 = './config_parameters_B.txt';
-const newFile = './new_config_parameters.txt';
+const configFile1 = './config_parameters_A.txt';       // Original file to modify
+const configFile2 = './config_parameters_B.txt';    // File to source replacements from
+const jsonFile = './config_replacements.json';       // JSON file with regex patterns
+const newFile = './new_config_parameters.txt';       // Output file
 
-// Call the function to create a new file with the updated server_url and version
-replaceVersionAndServerUrlWithRegex(configFile1, configFile2, newFile);
+// Call the function to apply replacements from JSON
+replaceLinesUsingJson(configFile1, configFile2, jsonFile, newFile);
