@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Reader Example</title>
+</head>
+<body>
+    <h1>Upload Two Files</h1>
+    <form>
+        <label for="file1">Select File 1:</label>
+        <input type="file" id="file1" accept=".txt"><br><br>
+
+        <label for="file2">Select File 2:</label>
+        <input type="file" id="file2" accept=".txt"><br><br>
+
+        <button type="button" onclick="readFiles()">Process Files</button>
+    </form>
+
+    <h2>File 1 Content:</h2>
+    <pre id="file1Content"></pre>
+
+    <h2>File 2 Content:</h2>
+    <pre id="file2Content"></pre>
+
+    <h2>Processed Output:</h2>
+    <pre id="outputContent"></pre>
+
+    <!-- Download Button -->
+    <button id="downloadBtn" style="display: none;" onclick="downloadFile()">Download Processed File</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
